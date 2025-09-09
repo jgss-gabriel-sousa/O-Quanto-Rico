@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    
+    <script src="./script.js" type="module" defer></script>
+  
+    <link rel="stylesheet" href="styles.css"/>
+
+    <title>O Quanto Rico?</title>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>O Quanto Rico?</h1>
+        <p class="lead">Calculadora de Percentil de Renda</p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <section class="card">
+        <h3>Qual o salário mínimo atual?</h3>
+        <label>R$</label>
+        <input id="salario-minimo" type="number" step="1" value="1500">
+
+        <hr style="margin:12px 0;border:none;border-top:1px solid rgba(255,255,255,0.03)">
+
+        <h3>Qual sua renda?</h3>
+        <label>R$</label>
+        <input id="renda" type="number" step="1" value="1500">
+        <div style="display:flex;gap:8px;margin-top:10px">
+            <button id="calcular">Calcular percentil</button>
+        </div>
+      </section>
+
+      <aside class="card">
+
+
+        <h3>Resultados</h3>
+        <div class="results" style="margin-top:8px">
+            <!--
+            <div class="stat"><div class="small">x<sub>m</sub> (escala)</div><div id="xm" class="big">—</div></div>
+            -->
+            <div class="stat"><div class="small">Percentil da renda</div><div id="percentil" class="big">—</div></div>
+            <div class="stat"><div id="msg" class="muted">—</div></div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</body>
+</html>
