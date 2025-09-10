@@ -1,9 +1,11 @@
-const SMEl = document.getElementById('salario-minimo');
-const rendaEl = document.getElementById('renda');
-const calcBtn = document.getElementById('calcular');
+import { mensagemComica } from './mensagemComica.js';
 
+const SalarioMinimoEl = document.getElementById('salario-minimo');
+const rendaEl = document.getElementById('renda');
 const percentilEl = document.getElementById('percentil');
 const msgEl = document.getElementById('msg');
+
+const SM = 1500; // Salário Mínimo
 
 let x_m = null;
 let alpha = null;
@@ -11,9 +13,6 @@ let lowA = null; // intercepto do logit
 let lowB = null; // coeficiente do logit
 
 function ajustarPareto(){
-    // Salário Mínimo
-    const SM = SMEl.valueAsNumber || 1500;
-
     // tabela PNAD (acumulada até o ponto)
     const pontosPNAD = [
         { p: 0.0695, R: 0.5 * SM },
@@ -74,12 +73,6 @@ function ajustarPareto(){
         lowA = null;
         lowB = null;
     }
-
-    xmEl.textContent = x_m.toLocaleString('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0});
-    alphaEl.textContent = alpha.toFixed(4);
-    funcEl.textContent = `R(p) = x_m / (1-p)^(1/alpha)\ncom x_m=${x_m.toFixed(2)}, alpha=${alpha.toFixed(4)}`;
-    msgEl.textContent = 'Pareto ajustada (R ≥ x_m) e logit estimado (R < x_m)';
-    percentilEl.textContent = '—';
 }
 
 function percentilPorLogit(R){
@@ -90,18 +83,16 @@ function percentilPorLogit(R){
     return p;
 }
 
-function calcularPercentil(){
+export function calcularPercentil(){
     if(x_m === null || alpha === null){ ajustarPareto(); }
-    const R = parseFloat(rendaEl.value);
+    const R = parseFloat(rendaEl.value.replace(/\D/g, ''));
     if(Number.isNaN(R) || R <= 0){ alert('Informe uma renda válida.'); return; }
-
-    const SM = SMEl.valueAsNumber || 1500;
 
     // caso 1: abaixo de 1 SM -> logit
     if(R <= 1 * SM){
         const pLogit = percentilPorLogit(R);
         if(pLogit !== null){
-            percentilEl.textContent = (pLogit*100).toFixed(2) + '%';
+            mensagemResultado(pLogit);
             return;
         }
     }
@@ -113,16 +104,19 @@ function calcularPercentil(){
         const t = (R - 1*SM) / (1*SM); // [0..1] entre 1 e 2 SM
         const p = p1 + t*(p2 - p1);
 
-        percentilEl.textContent = (p*100).toFixed(2) + '%';
+        mensagemResultado(p);
         return;
     }
 
     // caso 3: acima de 2 SM -> Pareto
     const p = 1 - Math.pow(x_m / R, alpha);
-    percentilEl.textContent = (p*100).toFixed(2) + '%';
+    mensagemResultado(p);
 }
 
-calcBtn.addEventListener('click', calcularPercentil);
+function mensagemResultado(percentil){
+    percentilEl.textContent = (percentil*100).toFixed(1) + '%';
+    msgEl.textContent = mensagemComica(percentil);
+}
 
 ajustarPareto();
 calcularPercentil();
