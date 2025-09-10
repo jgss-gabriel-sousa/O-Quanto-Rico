@@ -120,6 +120,10 @@ button {
     align-items: center;
 }
 
+#calcular {
+    margin-top: 10px;
+}
+
 footer {
     margin-top: 14px;
     color: var(--muted);
